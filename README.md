@@ -8,9 +8,7 @@ I made this sketch to be used to jump around the map in the Satisfactory game. I
 For this contraption I used an Arduino Nano ESP32, a HID capable device to simulate the keyboard, a 4 x 20 LCD screen and a rotary encoder with push button.
 
 ## Software
-Most of the code is my own, the (very clever) way the interrupts are handled is derived from the work of Marko Pinteric
- *           ► Technical paper by Marko Pinteric explaining his code:
- *           https://www.pinteric.com/rotary.html 
+Most of the code is my own, the (very clever) way the interrupts are handled is derived from the work of Marko Pinteric, see the Technical paper by Marko Pinteric explaining his code: https://www.pinteric.com/rotary.html 
 
 ## Workings
 First an initial screen is displayed for 3 seconds with the program version. After that a part (four lines) of the table of destinations is shown on the screen in a round robin fashion. The rotary encoder can be used to scroll in that table. The current entry has a '>'before its name.

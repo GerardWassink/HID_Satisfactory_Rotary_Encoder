@@ -1,11 +1,3 @@
-#if ARDUINO_USB_MODE
-
-#warning This sketch should be used when USB is in OTG mode
-void setup(){}
-void loop(){}
-
-#else
-
 /* ------------------------------------------------------------------------- *
  * Name   : HID_Satisfactory_Rotary_Encoder
  * Author : Gerard Wassink
@@ -44,6 +36,14 @@ void loop(){}
  * ------------------------------------------------------------------------- */
 
 
+#if ARDUINO_USB_MODE
+
+#warning This sketch should be used when USB is in OTG mode
+void setup(){}
+void loop(){}
+
+#else
+
 /* ------------------------------------------------------------------------- *
  *       Compiler directives to switch debugging on / off
  *       Do not enable debug when not needed, Serial takes space and time!
@@ -62,7 +62,7 @@ void loop(){}
 
 
 /* ------------------------------------------------------------------------- *
- *       Include libraries
+ *                                                         Include libraries
  * ------------------------------------------------------------------------- */
 #include <Wire.h>                       // I2C comms library
 #include <LiquidCrystal_I2C.h>          // LCD library
@@ -73,17 +73,17 @@ void loop(){}
 #include <USBHIDKeyboard.h>             // Keyboard library
 
 /* ------------------------------------------------------------------------- *
- *       Create objects
+ *                                                            Create objects
  * ------------------------------------------------------------------------- */
 LiquidCrystal_I2C display(0x26,20,4);   // Instantiate display object
 USBHIDKeyboard Keyboard;                // Instantiate keyboard object
 
 /* ------------------------------------------------------------------------- *
- *       Rotary encoder stuff
+ *                                                      Rotary encoder stuff
  * ------------------------------------------------------------------------- */
 #define PIN_A D2
 #define PIN_B D3
-#define PUSH_BTN D4
+#define buttonPin D4
 
 int rotationCounter = 0;                // Turn counter for the rotary encoder
                                         //   (negative = anti-clockwise)
@@ -94,9 +94,9 @@ int8_t previousRotationValue = 1;       // previous value for comparison
 int8_t TRANS[] = {0, -1, 1, 14, 1, 0, 14, -1, -1, 14, 0, 1, 14, 1, -1, 0};
 
 /* ------------------------------------------------------------------------- *
- *       Variable definitions for destinations in Satisfactory game
- *          These are named locations between which one can 'teletransport'
- *          using a !tp command in the game's chat window
+ *            Variable definitions for destinations in Satisfactory game
+ *                These are named locations between which one can 'teleport'
+ *                using a !tp command in the game's chat window
  * ------------------------------------------------------------------------- */
 const int numDestinations = 13;         // number of entries in the array
 int maxDestinationIndex = numDestinations - 1; // max index (since we're counting from zero)
@@ -122,9 +122,8 @@ String destinations[numDestinations] = {
 String myString;                        // for building up a 20 character string
 
 /* ------------------------------------------------------------------------- *
- *       Variables for rotary switch button 
+ *                                        Variables for rotary switch button 
  * ------------------------------------------------------------------------- */
-int buttonPin = D4;
 int buttonStateCurrent = HIGH;
 int buttonStatePrevious = HIGH;
 bool buttonPressed = false;
@@ -137,8 +136,6 @@ bool buttonPressed = false;
  * ------------------------------------------------------------------------- */
 void checkRotaryEncoder()
 {
-//  Serial.println("Interrupt! ");
-
   if (rotaryEncoder == false)           // Allowed to enter?
   {
     rotaryEncoder = true;               // DO NOT DISTURB, interrupt in progress...
@@ -183,16 +180,19 @@ void checkRotaryEncoder()
 
 
 /* ------------------------------------------------------------------------- *
- * ISR routine                                                      button()
+ *                                                    ISR routine - button()
  * ------------------------------------------------------------------------- */
-void button() {
+void button()
+{
   static unsigned long lastInterruptTime = 0;
   unsigned long interruptTime = millis();
 
-  if (interruptTime - lastInterruptTime > 5) {
+  if (interruptTime - lastInterruptTime > 5)
+  {
     buttonStateCurrent = digitalRead(buttonPin);
     if ((buttonStateCurrent != buttonStatePrevious) 
-        && (buttonStateCurrent == LOW)) {
+        && (buttonStateCurrent == LOW)) 
+    {
       buttonPressed = true;    
     }
     buttonStatePrevious = buttonStateCurrent;
@@ -202,7 +202,7 @@ void button() {
 
 
 /* ------------------------------------------------------------------------- *
- *       Routine to display stuff on the display of choice     LCD_display()
+ *         Routine to display stuff on the display of choice - LCD_display()
  * ------------------------------------------------------------------------- */
 void LCD_display(LiquidCrystal_I2C screen, int row, int col, String text) {
   screen.setCursor(col, row);
@@ -211,7 +211,7 @@ void LCD_display(LiquidCrystal_I2C screen, int row, int col, String text) {
 
 
 /* ------------------------------------------------------------------------- *
- * Show destination(s) at every scroll action               showDestinaton()
+ *             Show destination(s) at every scroll action - showDestinaton()
  * ------------------------------------------------------------------------- */
 void showDestinations()
 {
@@ -221,7 +221,8 @@ void showDestinations()
   //
   for (int line= 0; line < 4; line++)   // Go thru display lines 0 - 3
   {
-    switch (line) {
+    switch (line) 
+    {
       case 0:                           // Line 0
         if (currentDestination == 0)
           index = maxDestinationIndex;  // Roll over to last entry when line 1
@@ -253,10 +254,13 @@ void showDestinations()
         break;
     }
 
-    if (line == 1) {                    // take care of '>' befor current entry
-      myString = ">";
-    } else {
-      myString = " ";
+    if (line == 1)
+    {
+      myString = ">";    // place a '>' befor current entry
+    }
+    else 
+    {
+      myString = " ";                   // else just a space
     }
     myString.concat(destinations[index]);
     myString.concat("                    ");
@@ -266,7 +270,7 @@ void showDestinations()
 
 
 /* ------------------------------------------------------------------------- *
- * Setup routing, do initial stuff                                   setup()
+ *                                 Setup routing, do initial stuff - setup()
  * ------------------------------------------------------------------------- */
 void setup()
 {
@@ -275,7 +279,7 @@ void setup()
   pinMode(PIN_A, INPUT_PULLUP);         // mode for 
   pinMode(PIN_B, INPUT_PULLUP);         //  rotary pins
 
-  pinMode(PUSH_BTN, INPUT_PULLUP);      // mode for push-button pin
+  pinMode(buttonPin, INPUT_PULLUP);     // mode for push-button pin
 
   display.init();                       // Initialize display
   display.backlight();                  // Backlights on by default
@@ -293,15 +297,19 @@ void setup()
   LCD_display(display, 1, 0, myString.substring(0,20) );
 
   //
-  // Leave intro screen for 3 seconds
+  // Leave intro screen for 5 seconds
   //
-  delay(3000);
+  delay(5000);
 
+  //
   // We need to monitor both pins, rising and falling for all states
+  //
   attachInterrupt(digitalPinToInterrupt(PIN_A), checkRotaryEncoder, CHANGE);
   attachInterrupt(digitalPinToInterrupt(PIN_B), checkRotaryEncoder, CHANGE);
 
+  //
   // Monitor pushbutton pin
+  //
   attachInterrupt(digitalPinToInterrupt(buttonPin), button, CHANGE);
 
   debugln("Setup completed");
@@ -309,12 +317,11 @@ void setup()
 
 
 /* ------------------------------------------------------------------------- *
- * Do actual repetitive work                                          loop()
+ *                                        Do actual repetitive work - loop()
  * ------------------------------------------------------------------------- */
 void loop()
 {
-                                           // Has rotary moved?
-  if (rotationValue != previousRotationValue)
+  if (rotationValue != previousRotationValue)   // Has rotary moved?
   {
     if (rotationValue != 0)             // If valid movement, do something
     {
@@ -324,14 +331,8 @@ void loop()
       debug(rotationValue < 1 ? "L" :  "R");
       debugln(currentDestination);
     }
-                                        // Put destination on the matrix board
-/*
-    myString = destinations[currentDestination];
-    myString.concat("                    ");
-    LCD_display(display, 3, 0, myString.substring(0,20) );
- */
 
-    showDestinations();
+    showDestinations();                 // Put destination on the matrix board
 
     previousRotationValue = rotationValue; // avoid entering this code every time
   }

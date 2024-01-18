@@ -215,11 +215,12 @@ void LCD_display(LiquidCrystal_I2C screen, int row, int col, String text) {
  * ------------------------------------------------------------------------- */
 void showDestinations()
 {
-  int index, line;
+  int index = 0;                        // index in destination array
+  int line = 0;                         // line on LCD display
   //
   // Show destinations, current one on second line
   //
-  for (int line= 0; line < 4; line++)   // Go thru display lines 0 - 3
+  for (line= 0; line < 4; line++)   // Go thru display lines 0 - 3
   {
     switch (line) 
     {
@@ -299,7 +300,11 @@ void setup()
   //
   // Leave intro screen for 5 seconds
   //
-  delay(5000);
+  LCD_display(display, 2, 0, "Initializing " );
+  for (int t=13; t<16; t++) {
+    LCD_display(display, 2, t, "." );
+    delay(1000);
+  }
 
   //
   // We need to monitor both pins, rising and falling for all states
@@ -343,7 +348,7 @@ void loop()
     myString.concat(destinations[currentDestination]);
     Keyboard.println(myString);         // and send it
     buttonPressed = false;              // avoid entering this code every time
-  }
+   }
 
 }
 #endif

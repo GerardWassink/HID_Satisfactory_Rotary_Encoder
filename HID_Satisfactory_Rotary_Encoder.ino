@@ -32,7 +32,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * ------------------------------------------------------------------------- *
- *       Copyright (C) November 2021 Gerard Wassink
+ *       Copyright (C) Januari 2024 Gerard Wassink
  * ------------------------------------------------------------------------- */
 
 

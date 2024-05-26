@@ -98,25 +98,26 @@ int8_t TRANS[] = {0, -1, 1, 14, 1, 0, 14, -1, -1, 14, 0, 1, 14, 1, -1, 0};
  *                These are named locations between which one can 'teleport'
  *                using a !tp command in the game's chat window
  * ------------------------------------------------------------------------- */
-const int numDestinations = 13;         // number of entries in the array
+const int numDestinations = 4;         // number of entries in the array
 int maxDestinationIndex = numDestinations - 1; // max index (since we're counting from zero)
 int currentDestination  = 0;
 int previousDestination = 0;
 
 String destinations[numDestinations] = {
-              {"DunesAluCasings"} 
-            , {"GoldCoastOil"}
-            , {"GrassyCentral"}
-            , {"Grassy"}
-            , {"Hub"}
-            , {"Nuclear"}
-            , {"Nuclear2"}
-            , {"RockyDesertCentral"}
-            , {"Rubber"}
-            , {"Silica"}
-            , {"WaterfallFactory"}
-            , {"WaterFallStation"}
-            , {"WestDuneForrestCoal"}
+              {"BatteryFactory"}        // Crater Lakes April 2024
+            , {"CraterLakesCoal"}
+            , {"Home"}
+            , {"QuartzMine"}
+//              {"EndOfLine"}             // Rocky Desert 2024
+//            , {"EndOfLine2"}
+//            , {"GoldCoastOil"}
+//            , {"GrassyUranium"}
+//            , {"NorthForrestCrystal"}
+//            , {"NukePlant"}
+//            , {"SpireOil"}
+//            , {"StartingPoint"}
+//            , {"SwampUranium"}
+//            , {"TitanForestOil"}
             };
 
 String myString;                        // for building up a 20 character string
